@@ -1,0 +1,4 @@
+path:
+  basefolder: "%OneDriveConsumer%\\stand.fm"
+  bgmfolder: "%OneDriveConsumer%\\stand.fm\\bgm"
+  destfile: "%OneDriveConsumer%\\stand.fm\\out.mp3"
