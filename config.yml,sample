@@ -1,3 +1,8 @@
+body_vol: 0.1
+time:
+  intro: 5000
+  ending: 6000
+  fadeout: 1000
 path:
   basefolder: "%OneDriveConsumer%\\stand.fm"
   bgmfolder: "%OneDriveConsumer%\\stand.fm\\bgm"

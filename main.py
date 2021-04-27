@@ -4,8 +4,7 @@ import datetime
 from argparse import ArgumentParser
 
 from pydub import AudioSegment
-from pydub.utils import db_to_float, ratio_to_db
-
+from pydub.utils import ratio_to_db
 import yaml
 
 TODAY = datetime.date.today()
@@ -24,6 +23,35 @@ with open("config.yml", "r") as f:
   for n, v in config["path"].items():
     config["path"][n] = Path(os.path.expandvars(v))
 
+print("> During data loading")
 voice = AudioSegment.from_mp3(config["path"]["basefolder"] / datetime.datetime.strftime(args.date, "%Y-%m-%d.mp3"))
 bgm = AudioSegment.from_mp3(config["path"]["bgmfolder"] / args.bgm)
-back = bgm[:5 * 1000] + (bgm[5 * 1000:] + ratio_to_db(0.2))
+back : AudioSegment = AudioSegment.empty()
+introms= config["time"]["intro"]
+endingms = config["time"]["ending"]
+fadeoutms = config["time"]["fadeout"] * 1000
+intros = introms / 1000
+endings = endingms / 1000
+body_vol : float = ratio_to_db(float(config["body_vol"]))
+print("Finished.")
+
+print("> Preparation of BGM")
+print(f'0 / {int(voice.duration_seconds + intros + endings)}', end="")
+while back.duration_seconds + bgm.duration_seconds + intros + endings < voice.duration_seconds:
+  back = back + bgm
+  print(f'\r{int(back.duration_seconds)} / {int(voice.duration_seconds + intros + endings)}', end="")
+back = back + bgm[:voice.duration_seconds * 1000 - back.duration_seconds * 1000 + introms + endingms]
+print(f'\r{int(back.duration_seconds)} / {int(voice.duration_seconds + intros + endings)}')
+print("Finished.")
+
+print("> Volume adjustment")
+back = back[:introms] + (back[introms:endingms * -1] + body_vol) + \
+  back[endingms * - 1:].fade_out(fadeoutms)
+print("Finished.")
+
+print("> Output voice creation")
+result : AudioSegment = back.overlay(voice, introms)
+result.export(config["path"]["destfile"], format="mp3")
+print("Finished.")
+
+print(f'All Finished. The file is stored in {config["path"]["destfile"]}.')
