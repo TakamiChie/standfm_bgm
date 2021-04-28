@@ -5,6 +5,7 @@ from argparse import ArgumentParser
 
 from pydub import AudioSegment
 from pydub.utils import ratio_to_db
+from mutagen.id3 import ID3
 import yaml
 
 TODAY = datetime.date.today()
@@ -24,7 +25,9 @@ with open("config.yml", "r") as f:
     config["path"][n] = Path(os.path.expandvars(v))
 
 print("> During data loading")
-voice = AudioSegment.from_mp3(config["path"]["basefolder"] / datetime.datetime.strftime(args.date, "%Y-%m-%d.mp3"))
+voicepath = Path(config["path"]["basefolder"] / datetime.datetime.strftime(args.date, "%Y-%m-%d.mp3"))
+destpath = Path(config["path"]["destfile"])
+voice = AudioSegment.from_mp3(voicepath)
 bgm = AudioSegment.from_mp3(config["path"]["bgmfolder"] / args.bgm)
 back : AudioSegment = AudioSegment.empty()
 introms= config["time"]["intro"]
@@ -51,7 +54,15 @@ print("Finished.")
 
 print("> Output voice creation")
 result : AudioSegment = back.overlay(voice, introms)
-result.export(config["path"]["destfile"], format="mp3")
+result.export(destpath, format="mp3")
 print("Finished.")
 
-print(f'All Finished. The file is stored in {config["path"]["destfile"]}.')
+print("> Copy MP3 Tags")
+srctag = ID3(str(voicepath))
+desttag = ID3(str(destpath))
+for v in srctag.values():
+  desttag.add(v)
+desttag.save()
+print("Finished.")
+
+print(f'All Finished. The file is stored in {destpath}.')
