@@ -41,7 +41,7 @@ print("Finished.")
 
 print("> Preparation of BGM")
 print(f'0 / {int(voice.duration_seconds + intros + endings)}', end="")
-while back.duration_seconds + bgm.duration_seconds + intros + endings < voice.duration_seconds:
+while back.duration_seconds + bgm.duration_seconds < voice.duration_seconds + intros + endings:
   back = back + bgm
   print(f'\r{int(back.duration_seconds)} / {int(voice.duration_seconds + intros + endings)}', end="")
 back = back + bgm[:voice.duration_seconds * 1000 - back.duration_seconds * 1000 + introms + endingms]
