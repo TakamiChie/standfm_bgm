@@ -16,6 +16,7 @@ config = {
 
 parser = ArgumentParser()
 parser.add_argument("--date", default=TODAY, type=lambda s: datetime.datetime.strptime(s, "%Y/%m/%d"), help="yyyy/mm/dd形式の日付。指定がない場合は今日の日付。")
+parser.add_argument("--file", type=str, help="処理対象のファイル名。これを指定した場合dateは無視される")
 parser.add_argument("--bgm", default="default.mp3", help="BGMに使用するファイル名。指定が無い場合はdefault.mp3")
 args = parser.parse_args()
 
@@ -25,7 +26,7 @@ with open("config.yml", "r") as f:
     config["path"][n] = Path(os.path.expandvars(v))
 
 print("> During data loading")
-voicepath = Path(config["path"]["basefolder"] / datetime.datetime.strftime(args.date, "%Y-%m-%d.mp3"))
+voicepath = Path(config["path"]["basefolder"] / (datetime.datetime.strftime(args.date, "%Y-%m-%d.mp3") if args.file is None else args.file))
 destpath = Path(config["path"]["destfile"])
 voice = AudioSegment.from_mp3(voicepath)
 bgm = AudioSegment.from_mp3(config["path"]["bgmfolder"] / args.bgm)
