@@ -1,4 +1,17 @@
 body_vol: 0.1
+bgms:
+    - 4_programming.mp3
+    - 5_sbcast.mp3
+    - 6_freetalk.mp3
+    - None
+    - 1_startweek
+    -
+      - 2-1_game.mp3
+      - 2-2_anime.mp3
+      - 2-3_adhesion.mp3
+      - 2-4_sbc.mp3
+      - 2-5_freetalk.mp3
+    - None
 time:
   intro: 5000
   ending: 6000
@@ -6,4 +19,4 @@ time:
 path:
   basefolder: "%OneDriveConsumer%\\stand.fm"
   bgmfolder: "%OneDriveConsumer%\\stand.fm\\bgm"
-  destfile: "%OneDriveConsumer%\\stand.fm\\out.mp3"
+  destfile: "%OneDriveConsumer%\\stand.fm\\0000out.mp3"
