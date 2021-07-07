@@ -19,6 +19,9 @@ parser = ArgumentParser()
 parser.add_argument("--date", default=TODAY, type=lambda s: datetime.datetime.strptime(s, "%Y/%m/%d"), help="yyyy/mm/dd形式の日付。指定がない場合は今日の日付。")
 parser.add_argument("--file", type=str, help="処理対象のファイル名。これを指定した場合dateは無視される")
 parser.add_argument("--bgm", help="BGMに使用するファイル名。指定が無い場合はconfig.ymlで指定したものが使用される。それもない場合はdefault.mp3")
+parser.add_argument("--theme", help="この値は無視されます" )
+parser.add_argument("--title", help="この値は無視されます")
+parser.add_argument("--gui", action="store_true" , help="この値は無視されます")
 args = parser.parse_args()
 
 with open("config.yml", "r") as f:
