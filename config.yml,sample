@@ -12,6 +12,8 @@ bgms:
       - 2-4_sbc.mp3
       - 2-5_freetalk.mp3
     - None
+bgmmodes:
+  live: live.mp3
 time:
   intro: 5000
   ending: 6000
