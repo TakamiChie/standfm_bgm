@@ -3,6 +3,7 @@ from pathlib import Path
 import datetime
 import math
 from argparse import ArgumentParser
+import random
 
 from pydub import AudioSegment
 from pydub.utils import ratio_to_db
@@ -32,8 +33,9 @@ with open("config.yml", "r") as f:
 
 print("> set bgm")
 if args.mode:
-  args.bgm = config["bgmmodes"][args.mode] \
+  n = config["bgmmodes"][args.mode] \
     if "bgmmodes" in config and args.mode in config["bgmmodes"] else "default.mp3"
+  args.bgm = random.choice(n) if type(n) is list else n
 else:
   if args.bgm is None:
     if "bgms" in config:
