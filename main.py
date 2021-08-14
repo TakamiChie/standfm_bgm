@@ -41,7 +41,7 @@ else:
     if "bgms" in config:
       d = config["bgms"][args.date.weekday()]
       if type(d) is list:
-        args.bgm = d[math.floor(args.date.day / 7)]
+        args.bgm = d[math.floor((args.date.day - 1) / 7)]
       elif type(d) is str:
         args.bgm = d
       else:
