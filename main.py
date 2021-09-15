@@ -24,6 +24,7 @@ parser.add_argument("--mode", help="モードの値。未指定時モード無�
 parser.add_argument("--theme", help="この値は無視されます" )
 parser.add_argument("--title", help="この値は無視されます")
 parser.add_argument("--gui", action="store_true" , help="この値は無視されます")
+parser.add_argument("--outfile", help="出力ファイル(拡張子なし)。")
 args = parser.parse_args()
 
 with open("config.yml", "r") as f:
@@ -55,6 +56,8 @@ if args.mode: fnpattern += f"_{args.mode}"
 fnpattern += ".mp3"
 voicepath = Path(config["path"]["basefolder"] / (datetime.datetime.strftime(args.date, fnpattern) if args.file is None else args.file))
 destpath = Path(config["path"]["destfile"])
+if args.outfile is not None:
+  destpath = destpath.parent / f"{args.outfile}.mp3"
 voice = AudioSegment.from_mp3(voicepath)
 bgm = AudioSegment.from_mp3(config["path"]["bgmfolder"] / args.bgm)
 back : AudioSegment = AudioSegment.empty()
