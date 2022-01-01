@@ -25,6 +25,7 @@ parser.add_argument("--theme", help="この値は無視されます" )
 parser.add_argument("--title", help="この値は無視されます")
 parser.add_argument("--gui", action="store_true" , help="この値は無視されます")
 parser.add_argument("--outfile", help="出力ファイル(拡張子なし)。")
+parser.add_argument("--randseed", default=datetime.datetime.now().strftime("%j"), type=int, help="モードBGM指定時のランダムシード値を指定する。")
 args = parser.parse_args()
 
 with open("config.yml", "r") as f:
@@ -36,6 +37,7 @@ print("> set bgm")
 if args.mode:
   n = config["bgmmodes"][args.mode] \
     if "bgmmodes" in config and args.mode in config["bgmmodes"] else "default.mp3"
+  random.seed(args.randseed)
   args.bgm = random.choice(n) if type(n) is list else n
 else:
   if args.bgm is None:
