@@ -11,10 +11,12 @@
       "program": "${file}",
       "console": "integratedTerminal",
       "args": [
+        "--mode",
+        "live",
         "--date",
-        "2021/04/24",
-        "--bgm",
-        "1.mp3"
+        "2022/01/04",
+        "--randseed",
+        "5"
       ]
     }
   ]

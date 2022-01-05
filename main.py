@@ -4,6 +4,7 @@ import datetime
 import math
 from argparse import ArgumentParser
 import random
+import sqlite3
 
 from pydub import AudioSegment
 from pydub.utils import ratio_to_db
@@ -11,6 +12,8 @@ from mutagen.id3 import ID3
 import yaml
 
 TODAY = datetime.date.today()
+
+ANTIDUPLICATE = "anti-duplicate.db"
 
 config = {
   "path": {}
@@ -37,8 +40,20 @@ print("> set bgm")
 if args.mode:
   n = config["bgmmodes"][args.mode] \
     if "bgmmodes" in config and args.mode in config["bgmmodes"] else "default.mp3"
+  # 重複チェック
   random.seed(args.randseed)
-  args.bgm = random.choice(n) if type(n) is list else n
+  with sqlite3.connect(ANTIDUPLICATE) as conn:
+    tn = f"recent_{args.mode}"
+    sql = lambda q: [print(f"..{q}"), conn.cursor().execute(q)][1]
+    sql(f"CREATE TABLE IF NOT EXISTS {tn}(seed, bgm)")
+    while True: 
+      args.bgm = random.choice(n) if type(n) is list else n
+      if sql(f'SELECT COUNT(*) FROM {tn} WHERE seed != {args.randseed} and bgm = "{args.bgm}"').fetchall()[0][0] == 0: break
+    if sql(f'SELECT COUNT(*) FROM {tn} WHERE seed == {args.randseed} and bgm = "{args.bgm}"').fetchall()[0][0] == 0:
+      sql(f'INSERT INTO {tn} VALUES({args.randseed}, "{args.bgm}")')
+      while sql(f"SELECT COUNT(*) FROM {tn}").fetchall()[0][0] > (len(n) / 2):
+        sql(f"DELETE FROM {tn} WHERE rowid = (SELECT rowid FROM {tn} LIMIT 1 OFFSET 0)")
+      conn.commit()
 else:
   if args.bgm is None:
     if "bgms" in config:
